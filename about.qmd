@@ -1,0 +1,22 @@
+---
+title: "About"
+image: profile.jpg
+about:
+  template: jolla
+  links:
+    - icon: twitter
+      text: Twitter
+      href: https://x.com/mark_cherrie
+    - icon: linkedin
+      text: LinkedIn
+      href: https://www.linkedin.com/in/mark-cherrie-09009040/
+    - icon: github
+      text: Github
+      href: https://github.com/markocherrie
+---
+
+This is a blog about data collection, analysis and visualisation, and how to do those using R/Python.
+
+It's a useful way to consolidate my thoughts, share code and make new connections.
+
+Let me know if it's been useful for you.
