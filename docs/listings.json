@@ -2,6 +2,7 @@
   {
     "listing": "/index.html",
     "items": [
+      "/posts/era5tour/index.html",
       "/posts/welcome/index.html"
     ]
   }
