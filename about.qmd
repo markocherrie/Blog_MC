@@ -19,7 +19,7 @@ Hi I'm Mark - a scientist turned software developer, living in Edinburgh, Scotla
 
 This blog will feature:
 
-- Insights from data
-- Building online software in public
-- Experiences with tools and workflows 
-- Escapades in husbandary (being a husband not cultivating plants/animals), fatherhood, sport/fitness and food. 
+* Insights from data
+* Building online software in public
+* Experiences with tools and workflows 
+* Escapades in husbandary (being a husband not cultivating plants/animals), fatherhood, sport/fitness and food. 
