@@ -1,30 +1,23 @@
 [
   {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "Home",
-    "section": "",
-    "text": "Welcome To My Blog\n\n\n\n\n\n\nnews\n\n\n\n\n\n\n\n\n\nJun 18, 2024\n\n\nMark Cherrie\n\n\n\n\n\n\nNo matching items"
-  },
-  {
-    "objectID": "posts/welcome/index.html",
-    "href": "posts/welcome/index.html",
-    "title": "Welcome To My Blog",
-    "section": "",
-    "text": "This is the first post in a Quarto blog. Welcome!"
-  },
-  {
-    "objectID": "posts/post-with-code/index.html",
-    "href": "posts/post-with-code/index.html",
-    "title": "Post With Code",
-    "section": "",
-    "text": "This is a post with executable code.\n\n1 + 1\n\n[1] 2"
-  },
-  {
     "objectID": "about.html",
     "href": "about.html",
     "title": "About",
     "section": "",
-    "text": "This is a blog about data collection, analysis and visualisation, mostly using R/Python.\nIt’s a useful way to consolidate my thoughts, share code and make new connections.\nLet me know if it’s been useful for you."
+    "text": "Ideas, progress on side projects and general life stuff from a resercher turned software developer."
+  },
+  {
+    "objectID": "posts/welcome/index.html",
+    "href": "posts/welcome/index.html",
+    "title": "Blog 2.0",
+    "section": "",
+    "text": "I used to blog for years but it slowly tailed off.\nI miss having a place on the internet where I can put down ideas, progress on side projects and general life stuff. So here it is - blog 2.0.\nMainly what you’ll get here is:\n\nInsights from data\nExperiences with software, tools and workflows\nEscapades in husbandary (being a husband not cultivating plants/animals), fatherhood, sport/fitness and food.\n\nI’ve always been fond of authors that try to make their work reproducible and I will attempt that too for the data/software stuff, time permitting.\nThat’s enough for a welcome, now onto the first post.\n\n\n\nby Shubham Dhage"
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Home",
+    "section": "",
+    "text": "Blog 2.0\n\n\n\n\n\n\nnews\n\n\n\n\n\n\n\n\n\nSep 10, 2024\n\n\nMark Cherrie\n\n\n\n\n\n\nNo matching items"
   }
 ]

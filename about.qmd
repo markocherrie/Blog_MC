@@ -15,8 +15,4 @@ about:
       href: https://github.com/markocherrie
 ---
 
-This is a blog about data collection, analysis and visualisation, and how to do those using R/Python.
-
-It's a useful way to consolidate my thoughts, share code and make new connections.
-
-Let me know if it's been useful for you.
+Ideas, progress on side projects and general life stuff from a resercher turned software developer.
