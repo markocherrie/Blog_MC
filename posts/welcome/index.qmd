@@ -12,7 +12,8 @@ I miss having a place on the internet where I can put down ideas, progress on si
 Mainly what you'll get here is:  
 
 - Insights from data
-- Experiences with software, tools and workflows 
+- Building online software in public
+- Experiences with tools and workflows 
 - Escapades in husbandary (being a husband not cultivating plants/animals), fatherhood, sport/fitness and food. 
 
 I've always been fond of authors that try to make their work reproducible and I will attempt that too for the data/software stuff, time permitting. 
