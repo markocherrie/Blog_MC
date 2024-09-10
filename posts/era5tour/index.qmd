@@ -4,7 +4,7 @@ author: "Mark Cherrie"
 date: "2024-09-10"
 categories: [data]
 ---
-
+ 
 ![marko swift](era5tour.jpeg)
 
 
@@ -25,7 +25,7 @@ In terms of the climate data there is a wide selection at a single atmospheric l
 * 2m temperature
 * Total precipitation
 
-## What would you want to do with this data? 
+### What would you want to do with this data? 
 
 There are so many potential applications of this data from renewable energy project development (link) to [public health](https://rmets.onlinelibrary.wiley.com/doi/pdf/10.1002/met.2122). 
 
