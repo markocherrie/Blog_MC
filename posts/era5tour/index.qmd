@@ -3,6 +3,7 @@ title: "The ERA5 tour"
 author: "Mark Cherrie"
 date: "2024-09-10"
 categories: [data]
+# jupyter: python3
 ---
  
 ![marko swift](era5tour.jpeg)
@@ -12,7 +13,7 @@ This blog post is here by no popular demand, but I think this data deserves the 
 
 ## So what is ERA5? 
 
-ERA5 is short for ECMWF Reanalysis v5 (ERA5) and is a climate data product from the Copernicus Climate Change Service (C3S) at the European Centre for Medium-Range Weather Forecasts (ECMWF). OK, enough acronyms for now.
+ERA5 is short for ECMWF Reanalysis v5 and is a climate data product from the Copernicus Climate Change Service (C3S) at the European Centre for Medium-Range Weather Forecasts (ECMWF). OK, enough acronyms for now.
 
 The main **WOW** factor that ERA5 has over other datasets is it's incredible spatial and temporal resolution. The data begins 4 months into World War 2 (January 1940) and goes to present day, for every **hour**, for every 31km section of land and sea across the **globe**. 
 
@@ -25,15 +26,68 @@ In terms of the climate data there is a wide selection at a single atmospheric l
 * 2m temperature
 * Total precipitation
 
-### What would you want to do with this data? 
+## What can you do with this data? 
 
-There are so many potential applications of this data from renewable energy project development (link) to [public health](https://rmets.onlinelibrary.wiley.com/doi/pdf/10.1002/met.2122). 
+There are so many potential applications of this data from weather impacts on renewable energy project development (link) and [public health](https://rmets.onlinelibrary.wiley.com/doi/pdf/10.1002/met.2122), alongside the more standard meterological questions of 
+assessing flood risk, climate change etc.  
 
 ## How do you access this data?
 
-* GCP/AWS buckets
-* Climate Data Store - Copernicus API etc) 
+There are three main ways to access the data that I know about:
 
+* Climate Data Store - Copernicus API   (CDS API)
+* S3 storage (GCP/AWS)
+* Google Earth Engine (GEE) 
+
+![Figure 1: Sources of era5 data](sources.png)
+
+Deciding on which source you use depends on how much data you need and what variables you need. If you need less than a year of any variable go for CDS API; if you need more than a year and any variable email for a bulk download; if you need over a year for a selection of variables then you might be able to use data on AWS/GCP. The Google Earth Engine option can do both, but comes at a high cost for commercial applications; there's also a good python-based tutorial [here](https://github.com/jwagemann/era5_in_gee).  
+
+### CDS API
+
+The standard way to interact with ERA5 data and one that does a great job for smaller datasets (most likely less than a year).
+
+{{< video cdsapi.mp4 >}}
+
+Now copy and paste that into a python script. 
+
+<!-- ```{python}
+
+import cdsapi
+
+c = cdsapi.Client()
+
+c.retrieve(
+    'reanalysis-era5-single-levels',
+    {
+        'product_type': 'reanalysis',
+        'format': 'netcdf',
+        'year': '2024',
+        'month': '09',
+        'variable': [
+            '10m_u_component_of_wind', '10m_v_component_of_wind',
+        ],
+        'day': [
+            '01', '02', '03',
+            '04', '05',
+        ],
+        'time': [
+            '00:00', '01:00', '02:00',
+            '03:00', '04:00', '05:00',
+            '06:00', '07:00', '08:00',
+            '09:00', '10:00', '11:00',
+            '12:00', '13:00', '14:00',
+            '15:00', '16:00', '17:00',
+            '18:00', '19:00', '20:00',
+            '21:00', '22:00', '23:00',
+        ],
+        'anon_user_timestamp': '2024-09-11 08:09:06',
+    },
+    'download.nc')
+
+``` -->
+
+Now get credentials from CDS and add them as an environmental variable. 
 
 ### Formats 
 
