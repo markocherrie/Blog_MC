@@ -9,7 +9,7 @@
 <meta name="author" content="Mark Cherrie">
 <meta name="dcterms.date" content="2024-09-10">
 
-<title>Home - The ERA5 tour</title>
+<title>Home - The ERA5 tour (part 1)</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -21,6 +21,40 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -117,7 +151,7 @@ ul.task-list li input[type="checkbox"] {
 <header id="title-block-header" class="quarto-title-block default page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-body">
-      <h1 class="title">The ERA5 tour</h1>
+      <h1 class="title">The ERA5 tour (part 1)</h1>
                                 <div class="quarto-categories">
                 <div class="quarto-category">data</div>
               </div>
@@ -162,10 +196,10 @@ ul.task-list li input[type="checkbox"] {
 <figcaption>marko swift</figcaption>
 </figure>
 </div>
-<p>This blog post is here by no popular demand, but I think this data deserves the same recognition as Miss Swift IMO.</p>
+<p>ERA5 deserves the same recognition as Miss Swift IMO.</p>
 <section id="so-what-is-era5" class="level2">
 <h2 class="anchored" data-anchor-id="so-what-is-era5">So what is ERA5?</h2>
-<p>ERA5 is short for ECMWF Reanalysis v5 and is a climate data product from the Copernicus Climate Change Service (C3S) at the European Centre for Medium-Range Weather Forecasts (ECMWF). OK, enough acronyms for now.</p>
+<p>ERA5 is short for ECMWF Reanalysis v5 and is a climate data product from the Copernicus Climate Change Service (C3S) at the European Centre for Medium-Range Weather Forecasts (ECMWF). It’s a picture of past weather using a wide range of data sources via numerical weather prediction (NWP) models. OK, enough acronyms for now.</p>
 <p>The main <strong>WOW</strong> factor that ERA5 has over other datasets is it’s incredible spatial and temporal resolution. The data begins 4 months into World War 2 (January 1940) and goes to present day, for every <strong>hour</strong>, for every 31km section of land and sea across the <strong>globe</strong>.</p>
 <p>In terms of the climate data there is a wide selection at a single atmospheric level and a few at multi-level (e.g.&nbsp;pressure, temperature). Popular single level data includes:</p>
 <ul>
@@ -192,63 +226,163 @@ ul.task-list li input[type="checkbox"] {
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="sources.png" class="img-fluid figure-img"></p>
-<figcaption>Figure 1: Sources of era5 data</figcaption>
+<figcaption>Figure 1: Sources of ERA5 data</figcaption>
 </figure>
 </div>
 <p>Deciding on which source you use depends on how much data you need and what variables you need. If you need less than a year of any variable go for CDS API; if you need more than a year and any variable email for a bulk download; if you need over a year for a selection of variables then you might be able to use data on AWS/GCP. The Google Earth Engine option can do both, but comes at a high cost for commercial applications; there’s also a good python-based tutorial <a href="https://github.com/jwagemann/era5_in_gee">here</a>.</p>
+<p>In the next couple sections I will explain how to obtain credentials, make a request for a portion of ERA5 data and then process in python.</p>
 <section id="cds-api" class="level3">
 <h3 class="anchored" data-anchor-id="cds-api">CDS API</h3>
 <p>The standard way to interact with ERA5 data and one that does a great job for smaller datasets (most likely less than a year).</p>
+<section id="credentials" class="level4">
+<h4 class="anchored" data-anchor-id="credentials">Credentials</h4>
+<p>Create an account on cds - go to this <a href="https://cds.climate.copernicus.eu/api-how-to">page</a> - follow the instructions and create the $HOME/.cdsapirc file.</p>
+</section>
+<section id="data-request" class="level4">
+<h4 class="anchored" data-anchor-id="data-request">Data Request</h4>
+<p>From here you want to generate the API request, the website will build this for you if use the select boxes :</p>
 <div class="quarto-video"><video id="video_shortcode_videojs_video1" class="video-js vjs-default-skin vjs-fluid" controls="" preload="auto" data-setup="{}" title=""><source src="cdsapi.mp4"></video></div>
-<p>Now copy and paste that into a python script.</p>
-<!-- ```{python}
-
-import cdsapi
-
-c = cdsapi.Client()
-
-c.retrieve(
-    'reanalysis-era5-single-levels',
-    {
-        'product_type': 'reanalysis',
-        'format': 'netcdf',
-        'year': '2024',
-        'month': '09',
-        'variable': [
-            '10m_u_component_of_wind', '10m_v_component_of_wind',
-        ],
-        'day': [
-            '01', '02', '03',
-            '04', '05',
-        ],
-        'time': [
-            '00:00', '01:00', '02:00',
-            '03:00', '04:00', '05:00',
-            '06:00', '07:00', '08:00',
-            '09:00', '10:00', '11:00',
-            '12:00', '13:00', '14:00',
-            '15:00', '16:00', '17:00',
-            '18:00', '19:00', '20:00',
-            '21:00', '22:00', '23:00',
-        ],
-        'anon_user_timestamp': '2024-09-11 08:09:06',
-    },
-    'download.nc')
-
-``` -->
-<p>Now get credentials from CDS and add them as an environmental variable.</p>
+<p>Now copy and paste that into a python script - this will download the data into a netcdf called “download.nc”:</p>
+<div id="3a798ea7" class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> cdsapi</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>c <span class="op">=</span> cdsapi.Client()</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>c.retrieve(</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">'reanalysis-era5-single-levels'</span>,</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    {</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>        <span class="st">'product_type'</span>: <span class="st">'reanalysis'</span>,</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>        <span class="st">'format'</span>: <span class="st">'netcdf'</span>,</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>        <span class="st">'year'</span>: <span class="st">'2024'</span>,</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>        <span class="st">'month'</span>: <span class="st">'09'</span>,</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>        <span class="st">'variable'</span>: [</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>            <span class="st">'10m_u_component_of_wind'</span>, <span class="st">'10m_v_component_of_wind'</span>,</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>        ],</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>        <span class="st">'day'</span>: [</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>            <span class="st">'01'</span>, <span class="st">'02'</span>, <span class="st">'03'</span>,</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>            <span class="st">'04'</span>, <span class="st">'05'</span>,</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>        ],</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>        <span class="st">'time'</span>: [</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>            <span class="st">'00:00'</span>, <span class="st">'01:00'</span>, <span class="st">'02:00'</span>,</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>            <span class="st">'03:00'</span>, <span class="st">'04:00'</span>, <span class="st">'05:00'</span>,</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>            <span class="st">'06:00'</span>, <span class="st">'07:00'</span>, <span class="st">'08:00'</span>,</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>            <span class="st">'09:00'</span>, <span class="st">'10:00'</span>, <span class="st">'11:00'</span>,</span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>            <span class="st">'12:00'</span>, <span class="st">'13:00'</span>, <span class="st">'14:00'</span>,</span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>            <span class="st">'15:00'</span>, <span class="st">'16:00'</span>, <span class="st">'17:00'</span>,</span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>            <span class="st">'18:00'</span>, <span class="st">'19:00'</span>, <span class="st">'20:00'</span>,</span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>            <span class="st">'21:00'</span>, <span class="st">'22:00'</span>, <span class="st">'23:00'</span>,</span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>        ],</span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>        <span class="st">'anon_user_timestamp'</span>: <span class="st">'2024-09-11 08:09:06'</span>,</span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>    },</span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>    <span class="st">'download.nc'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 </section>
-<section id="formats" class="level3">
-<h3 class="anchored" data-anchor-id="formats">Formats</h3>
+<section id="processing" class="level4">
+<h4 class="anchored" data-anchor-id="processing">Processing</h4>
+<p>Download HDF5 libraries for your Linux distribution, then pip install the netCDF4 package.</p>
+<div id="f7829a92" class="cell" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> netCDF4 <span class="im">as</span> nc</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Open the NetCDF file</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>file_path <span class="op">=</span> <span class="st">'download.nc'</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>dataset <span class="op">=</span> nc.Dataset(file_path, <span class="st">'r'</span>)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Print the dataset information</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(dataset)</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Extract a variable (e.g., temperature)</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>temperature <span class="op">=</span> dataset.variables[<span class="st">'temperature'</span>][:]</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Print the variable information</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(temperature)</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Close the dataset</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>dataset.close()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+</section>
+<section id="analysis-ready-cloud-optimized-era5-hosted-on-gcp" class="level3">
+<h3 class="anchored" data-anchor-id="analysis-ready-cloud-optimized-era5-hosted-on-gcp">Analysis-Ready, Cloud Optimized ERA5 (hosted on GCP)</h3>
+<p>////////// insert some details /////////</p>
+<section id="credentials-1" class="level4">
+<h4 class="anchored" data-anchor-id="credentials-1">Credentials</h4>
+<p>The data is public so no need for credentials.</p>
+</section>
+<section id="data-request-1" class="level4">
+<h4 class="anchored" data-anchor-id="data-request-1">Data Request</h4>
+<p>Pip install the xarray, zarr, fsspe and gcsfs packages.</p>
+<p>Follow the <a href="https://github.com/google-research/arco-era5/blob/main/docs/0-Surface-Reanalysis-Walkthrough.ipynb">tutorial</a>.</p>
+</section>
+<section id="processing-1" class="level4">
+<h4 class="anchored" data-anchor-id="processing-1">Processing</h4>
+<p>The data is in Zarr format…. advantages etc.</p>
+</section>
+</section>
+<section id="era5-forcing-data-for-the-weather-research-and-forecasting-wrf-model-hosted-on-aws" class="level3">
+<h3 class="anchored" data-anchor-id="era5-forcing-data-for-the-weather-research-and-forecasting-wrf-model-hosted-on-aws">ERA5 forcing data for the Weather Research and Forecasting (WRF) model (hosted on AWS)</h3>
+<p>Global timeseries at 0.25 degree resolution from 2000-01 onwards in CSV format, for four variables:</p>
 <ul>
-<li>NetCDF</li>
-<li>Zarr</li>
+<li>100-m wind speed</li>
+<li>100-m wind direction</li>
+<li>2-m temperature</li>
+<li>surface pressure</li>
 </ul>
+<section id="credentials-2" class="level4">
+<h4 class="anchored" data-anchor-id="credentials-2">Credentials</h4>
+<p>It’s a public bucket again, so no credentials needed, however you need to either add configuration details to ~/.aws/credentials <strong>or</strong> add config as the following way when creating the S3 client:</p>
+<div id="591ed7e1" class="cell" data-execution_count="3">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> botocore <span class="im">import</span> UNSIGNED</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> botocore.client <span class="im">import</span> Config</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> boto3</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>s3_client <span class="op">=</span> boto3.client(<span class="st">'s3'</span>, config<span class="op">=</span>Config(signature_version<span class="op">=</span>UNSIGNED))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="data-request-2" class="level4">
+<h4 class="anchored" data-anchor-id="data-request-2">Data request</h4>
+<p>Follow this <a href="https://github.com/moptis/era5-for-wrf/blob/main/tutorials/era5_global_timeseries.ipynb">tutorial</a>. In summary you want to find the gid (1 to 1038240) that matched with the latitude/longitude pair that you are interested in and then use this code:</p>
+<div id="2011a46e" class="cell" data-execution_count="4">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> io <span class="im">import</span> StringIO</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co"># example GID</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>gid <span class="op">=</span> <span class="st">"1038240"</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Define the S3 bucket and file path</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>bucket_name <span class="op">=</span> <span class="st">'era5-for-wrf'</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>file_key <span class="op">=</span> <span class="ss">f'global_single_level/cells/</span><span class="sc">{</span>gid<span class="sc">}</span><span class="ss">/timeseries.csv'</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Get the file object</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>s3_object <span class="op">=</span> s3_client.get_object(Bucket<span class="op">=</span>bucket_name, Key<span class="op">=</span>file_key)</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Read the file content</span></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>file_content <span class="op">=</span> s3_object[<span class="st">'Body'</span>].read().decode(<span class="st">'utf-8'</span>)</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Use StringIO to convert the file content to a file-like object</span></span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>csv_string_io <span class="op">=</span> StringIO(file_content)</span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a><span class="co"># Read the CSV file into a Pandas DataFrame</span></span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>era5_df <span class="op">=</span> pd.read_csv(csv_string_io, index_col <span class="op">=</span> <span class="dv">0</span>, skiprows <span class="op">=</span> <span class="dv">1</span>, parse_dates <span class="op">=</span> <span class="va">True</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="processing-2" class="level4">
+<h4 class="anchored" data-anchor-id="processing-2">Processing</h4>
+<p>The data per point is a CSV with datetime as the index and then the four variables above, simple to work with in pandas or whatever data package you want to use.</p>
 </section>
 </section>
-<section id="why-is-this-a-timely-blog-post" class="level2">
-<h2 class="anchored" data-anchor-id="why-is-this-a-timely-blog-post">Why is this a timely blog post?</h2>
-<p>This instance of the CDS will be decommissioned on 26 September 2024 and will no longer be accessible from this date onwards. Please check our informative page to migrate to CDS-Beta now</p>
+</section>
+<section id="what-next" class="level2">
+<h2 class="anchored" data-anchor-id="what-next">What next?</h2>
+<p>ERA6 will have some advances over ERA5, including improvements:</p>
+<ul>
+<li>resolution of at least 18 km,</li>
+<li>model bias,</li>
+<li>realism of near-surface quantities,</li>
+<li>ocean wave physics</li>
+</ul>
+<p>… but won’t be available until 2027. So there’s still life in ERA5 for some time yet, but some things are changing.</p>
+<p>The current instance of CDS API will be decommissioned on 26 September 2024 and will no longer be accessible from this date onwards.</p>
+<p>Part 2 of this blog will summarise how to get access via the new CDS route.</p>
 
 
 </section>

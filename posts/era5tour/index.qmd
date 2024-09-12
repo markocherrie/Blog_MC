@@ -1,19 +1,18 @@
 ---
-title: "The ERA5 tour"
+title: "The ERA5 tour (part 1)"
 author: "Mark Cherrie"
 date: "2024-09-10"
 categories: [data]
-# jupyter: python3
+jupyter: python3
 ---
  
 ![marko swift](era5tour.jpeg)
 
-
-This blog post is here by no popular demand, but I think this data deserves the same recognition as Miss Swift IMO. 
+ERA5 deserves the same recognition as Miss Swift IMO. 
 
 ## So what is ERA5? 
 
-ERA5 is short for ECMWF Reanalysis v5 and is a climate data product from the Copernicus Climate Change Service (C3S) at the European Centre for Medium-Range Weather Forecasts (ECMWF). OK, enough acronyms for now.
+ERA5 is short for ECMWF Reanalysis v5 and is a climate data product from the Copernicus Climate Change Service (C3S) at the European Centre for Medium-Range Weather Forecasts (ECMWF). It's a picture of past weather using a wide range of data sources via numerical weather prediction (NWP) models. OK, enough acronyms for now.
 
 The main **WOW** factor that ERA5 has over other datasets is it's incredible spatial and temporal resolution. The data begins 4 months into World War 2 (January 1940) and goes to present day, for every **hour**, for every 31km section of land and sea across the **globe**. 
 
@@ -39,19 +38,34 @@ There are three main ways to access the data that I know about:
 * S3 storage (GCP/AWS)
 * Google Earth Engine (GEE) 
 
-![Figure 1: Sources of era5 data](sources.png)
+![Figure 1: Sources of ERA5 data](sources.png)
 
-Deciding on which source you use depends on how much data you need and what variables you need. If you need less than a year of any variable go for CDS API; if you need more than a year and any variable email for a bulk download; if you need over a year for a selection of variables then you might be able to use data on AWS/GCP. The Google Earth Engine option can do both, but comes at a high cost for commercial applications; there's also a good python-based tutorial [here](https://github.com/jwagemann/era5_in_gee).  
+Deciding on which source you use depends on how much data you need and what variables you need. If you need less than a year of any variable go for CDS API; if you need more than a year and any variable email for a bulk download; if you need over a year for a selection of variables then you might be able to use data on AWS/GCP. The Google Earth Engine option can do both, but comes at a high cost for commercial applications; if you are working in a university and already familiar with GEE then agood python-based tutorial is available [here](https://github.com/jwagemann/era5_in_gee).  
+
+In the next couple sections I will explain how to obtain credentials, make a request for a portion of ERA5 data and then process in python. 
 
 ### CDS API
 
 The standard way to interact with ERA5 data and one that does a great job for smaller datasets (most likely less than a year).
 
+
+#### Credentials
+
+Create an account on cds - go to this [page](https://cds.climate.copernicus.eu/api-how-to) - follow the instructions and create the $HOME/.cdsapirc file.
+
+
+#### Data Request
+
+From here you want to generate the API request, the website will build this for you if use the select boxes :
+
 {{< video cdsapi.mp4 >}}
 
-Now copy and paste that into a python script. 
+Now copy and paste that into a python script - this will download the data into a netcdf called "download.nc": 
 
-<!-- ```{python}
+```{python}
+#| eval: false
+#| echo: true
+#| output: false
 
 import cdsapi
 
@@ -85,20 +99,122 @@ c.retrieve(
     },
     'download.nc')
 
-``` -->
+```
 
-Now get credentials from CDS and add them as an environmental variable. 
+#### Processing
 
-### Formats 
+Download HDF5 libraries for your Linux distribution, then pip install the netCDF4 package. 
 
-* NetCDF
-* Zarr
+```{python}
+#| eval: false
+#| echo: true
+#| output: false
+import netCDF4 as nc
+
+# Open the NetCDF file
+file_path = 'download.nc'
+dataset = nc.Dataset(file_path, 'r')
+
+# Print the dataset information
+print(dataset)
+
+# Extract a variable (e.g., temperature)
+temperature = dataset.variables['temperature'][:]
+
+# Print the variable information
+print(temperature)
+
+# Close the dataset
+dataset.close()
+
+```
+
+### Analysis-Ready, Cloud Optimized ERA5 (hosted on GCP)
+
+////////// insert some details /////////
+
+#### Credentials
+The data is public so no need for credentials. 
+
+#### Data Request
+
+Pip install the xarray, zarr, fsspe and gcsfs packages. 
+
+Follow the [tutorial](https://github.com/google-research/arco-era5/blob/main/docs/0-Surface-Reanalysis-Walkthrough.ipynb). 
+
+#### Processing
+
+The data is in Zarr format.... advantages etc.
 
 
+### ERA5 forcing data for the Weather Research and Forecasting (WRF) model (hosted on AWS)
 
-## Why is this a timely blog post?
+This source is focused on the wind industry. It's a subset of ERA5 timeseries data at 0.25 degree resolution from 2000-01 onwards in CSV format, for four variables:
 
-This instance of the CDS will be decommissioned on 26 September 2024 and will no longer be accessible from this date onwards. Please check our informative page to migrate to CDS-Beta now
+* 100-m wind speed
+* 100-m wind direction
+* 2-m temperature
+* surface pressure
 
+#### Credentials
+It's a public bucket again, so no credentials needed, however you need to either add configuration details to ~/.aws/credentials **or** add config as the following way when creating the S3 client:
+
+```{python}
+from botocore import UNSIGNED
+from botocore.client import Config
+import boto3
+
+s3_client = boto3.client('s3', config=Config(signature_version=UNSIGNED))
+```
+
+
+#### Data request
+
+Follow this [tutorial](https://github.com/moptis/era5-for-wrf/blob/main/tutorials/era5_global_timeseries.ipynb). In summary you want to find the gid (1 to 1038240) that matches with the latitude/longitude pair that you are interested in and then use this code:
+
+```{python}
+import pandas as pd
+from io import StringIO
+
+# example GID
+gid = "1038240"
+
+# Define the S3 bucket and file path
+bucket_name = 'era5-for-wrf'
+file_key = f'global_single_level/cells/{gid}/timeseries.csv'
+
+# Get the file object
+s3_object = s3_client.get_object(Bucket=bucket_name, Key=file_key)
+
+# Read the file content
+file_content = s3_object['Body'].read().decode('utf-8')
+
+# Use StringIO to convert the file content to a file-like object
+csv_string_io = StringIO(file_content)
+
+# Read the CSV file into a Pandas DataFrame
+era5_df = pd.read_csv(csv_string_io, index_col = 0, skiprows = 1, parse_dates = True)
+
+```
+
+#### Processing
+
+The data per point is a CSV with datetime as the index and then the four variables above - simple to work with in pandas or whatever data package you want to use. 
+
+
+##  What next?
+
+Having spent the blog post raving about ERA5 you'll be surprised to hear that their sibling has been planed and will have some major improvements:
+
+* resolution of at least 18 km,
+* model bias,
+* realism of near-surface quantities,
+* ocean wave physics
+
+... but it's not due until 2027. So there's still life in ERA5 for some time yet, however there are a few changes for one of the sources.
+
+The current instance of CDS API will be decommissioned on 26 September 2024 and will no longer be accessible from this date onwards. 
+
+Part 2 of this blog will summarise how to get access via the new CDS route. 
 
 
