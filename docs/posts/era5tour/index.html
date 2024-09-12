@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Mark Cherrie">
-<meta name="dcterms.date" content="2024-09-10">
+<meta name="dcterms.date" content="2024-09-12">
 
 <title>Home - The ERA5 tour (part 1)</title>
 <style>
@@ -75,8 +75,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/quarto-contrib/social-share-0.1.0/social-share.css" rel="stylesheet">
+<link href="../../site_libs/quarto-contrib/social-share-0.1.0/all.css" rel="stylesheet">
 <script src="../../site_libs/quarto-contrib/videojs/video.min.js"></script>
 <link href="../../site_libs/quarto-contrib/videojs/video-js.css" rel="stylesheet">
+<link href="../../site_libs/quarto-contrib/fontawesome6-0.1.0/all.css" rel="stylesheet">
+<link href="../../site_libs/quarto-contrib/fontawesome6-0.1.0/latex-fontsize.css" rel="stylesheet">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -171,7 +175,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div>
       <div class="quarto-title-meta-heading">Published</div>
       <div class="quarto-title-meta-contents">
-        <p class="date">September 10, 2024</p>
+        <p class="date">September 12, 2024</p>
       </div>
     </div>
     
@@ -190,16 +194,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="era5tour.jpeg" class="img-fluid figure-img"></p>
-<figcaption>marko swift</figcaption>
-</figure>
-</div>
-<p>ERA5 deserves the same recognition as Miss Swift IMO.</p>
-<section id="so-what-is-era5" class="level2">
-<h2 class="anchored" data-anchor-id="so-what-is-era5">So what is ERA5?</h2>
-<p>ERA5 is short for ECMWF Reanalysis v5 and is a climate data product from the Copernicus Climate Change Service (C3S) at the European Centre for Medium-Range Weather Forecasts (ECMWF). It’s a picture of past weather using a wide range of data sources via numerical weather prediction (NWP) models. OK, enough acronyms for now.</p>
+<p><img src="era5tour.jpeg" class="img-fluid"></p>
+<p><i class="fa-solid fa-fire" aria-label="fire"></i> ERA5 deserves the same recognition as Miss Swift IMO</p>
+<section id="what-is-era5" class="level2">
+<h2 class="anchored" data-anchor-id="what-is-era5">What is ERA5?</h2>
+<p>ERA5 is short for ECMWF Reanalysis v5 and is a climate data product from the Copernicus Climate Change Service (C3S) at the European Centre for Medium-Range Weather Forecasts (ECMWF). It’s the best picture of past weather that we have, created using a wide range of data sources via numerical weather prediction (NWP) models. OK, enough acronyms for now.</p>
 <p>The main <strong>WOW</strong> factor that ERA5 has over other datasets is it’s incredible spatial and temporal resolution. The data begins 4 months into World War 2 (January 1940) and goes to present day, for every <strong>hour</strong>, for every 31km section of land and sea across the <strong>globe</strong>.</p>
 <p>In terms of the climate data there is a wide selection at a single atmospheric level and a few at multi-level (e.g.&nbsp;pressure, temperature). Popular single level data includes:</p>
 <ul>
@@ -213,37 +212,41 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="what-can-you-do-with-this-data" class="level2">
 <h2 class="anchored" data-anchor-id="what-can-you-do-with-this-data">What can you do with this data?</h2>
-<p>There are so many potential applications of this data from weather impacts on renewable energy project development (link) and <a href="https://rmets.onlinelibrary.wiley.com/doi/pdf/10.1002/met.2122">public health</a>, alongside the more standard meterological questions of assessing flood risk, climate change etc.</p>
+<p>There are so many potential applications of this data from <a href="https://www.sciencedirect.com/science/article/pii/S0360544221017680">wind power simulation</a> and <a href="https://rmets.onlinelibrary.wiley.com/doi/pdf/10.1002/met.2122">public health</a>, alongside the more standard meterological questions of assessing flood risk, climate change etc.</p>
 </section>
 <section id="how-do-you-access-this-data" class="level2">
 <h2 class="anchored" data-anchor-id="how-do-you-access-this-data">How do you access this data?</h2>
-<p>There are three main ways to access the data that I know about:</p>
+<p>There are four main ways to access the data that I know about:</p>
 <ul>
 <li>Climate Data Store - Copernicus API (CDS API)</li>
-<li>S3 storage (GCP/AWS)</li>
+<li>Analysis-Ready, Cloud Optimized ERA5 (hosted on GCP)</li>
+<li>ERA5 forcing data for the Weather Research and Forecasting (WRF) model (hosted on AWS)</li>
 <li>Google Earth Engine (GEE)</li>
 </ul>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="sources.png" class="img-fluid figure-img"></p>
+<p><img src="sources2.png" class="img-fluid figure-img"></p>
 <figcaption>Figure 1: Sources of ERA5 data</figcaption>
 </figure>
 </div>
-<p>Deciding on which source you use depends on how much data you need and what variables you need. If you need less than a year of any variable go for CDS API; if you need more than a year and any variable email for a bulk download; if you need over a year for a selection of variables then you might be able to use data on AWS/GCP. The Google Earth Engine option can do both, but comes at a high cost for commercial applications; there’s also a good python-based tutorial <a href="https://github.com/jwagemann/era5_in_gee">here</a>.</p>
-<p>In the next couple sections I will explain how to obtain credentials, make a request for a portion of ERA5 data and then process in python.</p>
+<p>Deciding on which source you use depends on how much data you need and what variables you need. If you need less than a year of any variable go for CDS API; if you need more than a year and any variable email for a bulk download; if you need over a year for a selection of variables then you might be able to use data on AWS/GCP. The Google Earth Engine option can do both, but comes at a high cost for commercial applications; if you are working in a university and already familiar with GEE then a good python-based tutorial is available <a href="https://github.com/jwagemann/era5_in_gee">here</a>.</p>
+<p>In the next couple sections I will explain how to setup your working environment, make a request for a portion of ERA5 data and then process in python.</p>
 <section id="cds-api" class="level3">
 <h3 class="anchored" data-anchor-id="cds-api">CDS API</h3>
-<p>The standard way to interact with ERA5 data and one that does a great job for smaller datasets (most likely less than a year).</p>
-<section id="credentials" class="level4">
-<h4 class="anchored" data-anchor-id="credentials">Credentials</h4>
-<p>Create an account on cds - go to this <a href="https://cds.climate.copernicus.eu/api-how-to">page</a> - follow the instructions and create the $HOME/.cdsapirc file.</p>
+<p>The CDS API is the standard way to interact with ERA5 data and one that does a great job for smaller datasets (most likely less than a year).</p>
+<section id="setup" class="level4">
+<h4 class="anchored" data-anchor-id="setup">Setup</h4>
+<p>Create an account on CDS by going to this <a href="https://cds.climate.copernicus.eu/api-how-to">page</a> - follow the instructions and create the $HOME/.cdsapirc file. Pip install cdsapi.</p>
+<p>To work with the outputs you might need to download HDF5 libraries (for me on mac it was ‘brew install hdf5’). Once that’s set up pip install the netCDF4 package.</p>
 </section>
 <section id="data-request" class="level4">
 <h4 class="anchored" data-anchor-id="data-request">Data Request</h4>
-<p>From here you want to generate the API request, the website will build this for you if use the select boxes :</p>
+<p>From here you want to generate the API request, the website will build this for you if use the select boxes, see below for my wonderful clicking and scrolling skills :</p>
 <div class="quarto-video"><video id="video_shortcode_videojs_video1" class="video-js vjs-default-skin vjs-fluid" controls="" preload="auto" data-setup="{}" title=""><source src="cdsapi.mp4"></video></div>
 <p>Now copy and paste that into a python script - this will download the data into a netcdf called “download.nc”:</p>
-<div id="3a798ea7" class="cell" data-execution_count="1">
+<div id="8ef62d17" class="cell" data-execution_count="1">
+<details class="code-fold">
+<summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> cdsapi</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>c <span class="op">=</span> cdsapi.Client()</span>
@@ -275,12 +278,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>        <span class="st">'anon_user_timestamp'</span>: <span class="st">'2024-09-11 08:09:06'</span>,</span>
 <span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>    },</span>
 <span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>    <span class="st">'download.nc'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 </div>
 </section>
 <section id="processing" class="level4">
 <h4 class="anchored" data-anchor-id="processing">Processing</h4>
-<p>Download HDF5 libraries for your Linux distribution, then pip install the netCDF4 package.</p>
-<div id="f7829a92" class="cell" data-execution_count="2">
+<p>The data is netcdf - a common file type for multidimensional array data. When I say multidimensional, what I’m generally thinking of is 4 dimensions - latitude, longitude, time and <strong>some interesting data</strong>. A key feature of netcdf is that metadata is embedded within the file. When you print the dataset in python you will get to see all this useful information.</p>
+<p>Here is an example of working with the netcdf file:</p>
+<div id="a0ad329a" class="cell" data-execution_count="2">
+<details class="code-fold">
+<summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> netCDF4 <span class="im">as</span> nc</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Open the NetCDF file</span></span>
@@ -298,50 +305,68 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Close the dataset</span></span>
 <span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>dataset.close()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 </div>
 </section>
 </section>
 <section id="analysis-ready-cloud-optimized-era5-hosted-on-gcp" class="level3">
 <h3 class="anchored" data-anchor-id="analysis-ready-cloud-optimized-era5-hosted-on-gcp">Analysis-Ready, Cloud Optimized ERA5 (hosted on GCP)</h3>
-<p>////////// insert some details /////////</p>
-<section id="credentials-1" class="level4">
-<h4 class="anchored" data-anchor-id="credentials-1">Credentials</h4>
+<p>ARCO for short, this has been created by Google to feed into a weather forecasting model. There are five datasets:</p>
+<ul>
+<li>‘gcp-public-data-arco-era5/co/model-level-moisture.zarr’,</li>
+<li>‘gcp-public-data-arco-era5/co/model-level-wind.zarr’,</li>
+<li>‘gcp-public-data-arco-era5/co/single-level-forecast.zarr’,</li>
+<li>‘gcp-public-data-arco-era5/co/single-level-reanalysis.zarr’,</li>
+<li>‘gcp-public-data-arco-era5/co/single-level-surface.zarr’</li>
+</ul>
+<p>The reanalysis is the one we are interested in.</p>
+<section id="setup-1" class="level4">
+<h4 class="anchored" data-anchor-id="setup-1">Setup</h4>
 <p>The data is public so no need for credentials.</p>
+<p>Pip install the xarray, zarr, fsspec and gcsfs packages.</p>
 </section>
 <section id="data-request-1" class="level4">
 <h4 class="anchored" data-anchor-id="data-request-1">Data Request</h4>
-<p>Pip install the xarray, zarr, fsspe and gcsfs packages.</p>
-<p>Follow the <a href="https://github.com/google-research/arco-era5/blob/main/docs/0-Surface-Reanalysis-Walkthrough.ipynb">tutorial</a>.</p>
+<p>Follow this <a href="https://github.com/google-research/arco-era5/blob/main/docs/0-Surface-Reanalysis-Walkthrough.ipynb">tutorial</a>.</p>
+<p>One of the challenging aspects of accessing via this route is that the spatial dimention corresponds to a Gaussian Grid - in particular the reduced Gaussian Grid N320 (which means there are 320 latitude points from the equator to each pole). If you want to subset to a particular lat and long within the Gaussian Grid then you need to use the “GRIB_paramId” attribute, this will related to the values <a href="https://confluence.ecmwf.int/display/FCST/Gaussian+grid+with+320+latitude+lines+between+pole+and+equator">here</a>.</p>
+<p>Otherwise the recommended way is to subset the data using the latitude and longitude attributes. <strong>Note</strong> that the coordinate system for ERA5 is 0 to 360 not -180 to 180.</p>
 </section>
 <section id="processing-1" class="level4">
 <h4 class="anchored" data-anchor-id="processing-1">Processing</h4>
-<p>The data is in Zarr format…. advantages etc.</p>
+<p>Zarr is a powerful way to store chunked, compressed, N-dimensional arrays based on an open-source specification. The key part is that it is optimised for cloud-native storage and for parallel input/output.</p>
+<p>There’s a bit of a learning curve to working with xarray (and dask) in python.</p>
 </section>
 </section>
 <section id="era5-forcing-data-for-the-weather-research-and-forecasting-wrf-model-hosted-on-aws" class="level3">
 <h3 class="anchored" data-anchor-id="era5-forcing-data-for-the-weather-research-and-forecasting-wrf-model-hosted-on-aws">ERA5 forcing data for the Weather Research and Forecasting (WRF) model (hosted on AWS)</h3>
-<p>Global timeseries at 0.25 degree resolution from 2000-01 onwards in CSV format, for four variables:</p>
+<p>This source is focused on the wind industry. It’s a subset of ERA5 timeseries data at 0.25 degree resolution from 2000-01 onwards in CSV format, for four variables:</p>
 <ul>
 <li>100-m wind speed</li>
 <li>100-m wind direction</li>
 <li>2-m temperature</li>
 <li>surface pressure</li>
 </ul>
-<section id="credentials-2" class="level4">
-<h4 class="anchored" data-anchor-id="credentials-2">Credentials</h4>
+<section id="setup-2" class="level4">
+<h4 class="anchored" data-anchor-id="setup-2">Setup</h4>
+<p>Pip install boto3 and pandas.</p>
 <p>It’s a public bucket again, so no credentials needed, however you need to either add configuration details to ~/.aws/credentials <strong>or</strong> add config as the following way when creating the S3 client:</p>
-<div id="591ed7e1" class="cell" data-execution_count="3">
+<div id="ccd665bf" class="cell" data-execution_count="3">
+<details class="code-fold">
+<summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> botocore <span class="im">import</span> UNSIGNED</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> botocore.client <span class="im">import</span> Config</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> boto3</span>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>s3_client <span class="op">=</span> boto3.client(<span class="st">'s3'</span>, config<span class="op">=</span>Config(signature_version<span class="op">=</span>UNSIGNED))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 </div>
 </section>
 <section id="data-request-2" class="level4">
 <h4 class="anchored" data-anchor-id="data-request-2">Data request</h4>
-<p>Follow this <a href="https://github.com/moptis/era5-for-wrf/blob/main/tutorials/era5_global_timeseries.ipynb">tutorial</a>. In summary you want to find the gid (1 to 1038240) that matched with the latitude/longitude pair that you are interested in and then use this code:</p>
-<div id="2011a46e" class="cell" data-execution_count="4">
+<p>Follow this <a href="https://github.com/moptis/era5-for-wrf/blob/main/tutorials/era5_global_timeseries.ipynb">tutorial</a>. In summary you want to find the gid (1 to 1038240) that matches with the latitude/longitude pair that you are interested in and then do something similar to below:</p>
+<div id="4ed0d53a" class="cell" data-execution_count="4">
+<details class="code-fold">
+<summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> io <span class="im">import</span> StringIO</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -363,26 +388,76 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a><span class="co"># Read the CSV file into a Pandas DataFrame</span></span>
 <span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>era5_df <span class="op">=</span> pd.read_csv(csv_string_io, index_col <span class="op">=</span> <span class="dv">0</span>, skiprows <span class="op">=</span> <span class="dv">1</span>, parse_dates <span class="op">=</span> <span class="va">True</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 </div>
 </section>
 <section id="processing-2" class="level4">
 <h4 class="anchored" data-anchor-id="processing-2">Processing</h4>
-<p>The data per point is a CSV with datetime as the index and then the four variables above, simple to work with in pandas or whatever data package you want to use.</p>
+<p>The data per point is a CSV with datetime as the index and then the four variables above - simple to work with in pandas or whatever data package you want to use.</p>
 </section>
 </section>
+</section>
+<section id="summary" class="level2">
+<h2 class="anchored" data-anchor-id="summary">Summary</h2>
+<p>Here is the following spiciness (read difficulty) for accessing each of the data sources:</p>
+<div id="tbl-letters" class="quarto-float anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-letters-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;1: Data Access Spiciness
+</figcaption>
+<div aria-describedby="tbl-letters-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table class="table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Source</th>
+<th>Setup</th>
+<th>Data Request</th>
+<th>Processing</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>CDS API</td>
+<td><i class="fa-solid fa-pepper-hot" aria-label="pepper-hot"></i><i class="fa-solid fa-pepper-hot" aria-label="pepper-hot"></i></td>
+<td><p><i class="fa-solid fa-pepper-hot" aria-label="pepper-hot"></i></p></td>
+<td><p><i class="fa-solid fa-pepper-hot" aria-label="pepper-hot"></i></p></td>
+</tr>
+<tr class="even">
+<td>Analysis-Ready, Cloud Optimized ERA5 (hosted on GCP)</td>
+<td><p><i class="fa-solid fa-pepper-hot" aria-label="pepper-hot"></i></p></td>
+<td><i class="fa-solid fa-pepper-hot" aria-label="pepper-hot"></i><i class="fa-solid fa-pepper-hot" aria-label="pepper-hot"></i></td>
+<td><i class="fa-solid fa-pepper-hot" aria-label="pepper-hot"></i><i class="fa-solid fa-pepper-hot" aria-label="pepper-hot"></i><i class="fa-solid fa-pepper-hot" aria-label="pepper-hot"></i></td>
+</tr>
+<tr class="odd">
+<td>ERA5 forcing data for the Weather Research and Forecasting (WRF) model (hosted on AWS)</td>
+<td><p><i class="fa-solid fa-pepper-hot" aria-label="pepper-hot"></i></p></td>
+<td><p><i class="fa-solid fa-pepper-hot" aria-label="pepper-hot"></i></p></td>
+<td><p><i class="fa-solid fa-pepper-hot" aria-label="pepper-hot"></i></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</figure>
+</div>
 </section>
 <section id="what-next" class="level2">
 <h2 class="anchored" data-anchor-id="what-next">What next?</h2>
-<p>ERA6 will have some advances over ERA5, including improvements:</p>
+<p>Having spent the blog post raving about ERA5 you’ll be surprised to hear that their sibling has been planned and will have some major improvements:</p>
 <ul>
 <li>resolution of at least 18 km,</li>
 <li>model bias,</li>
 <li>realism of near-surface quantities,</li>
 <li>ocean wave physics</li>
 </ul>
-<p>… but won’t be available until 2027. So there’s still life in ERA5 for some time yet, but some things are changing.</p>
-<p>The current instance of CDS API will be decommissioned on 26 September 2024 and will no longer be accessible from this date onwards.</p>
-<p>Part 2 of this blog will summarise how to get access via the new CDS route.</p>
+<p>… so why the fuck have I been reading about accessing an inferior data product I hear you say</p>
+<p>Well, ERA6 is not due until 2027, so there’s still plenty of life in ERA5 for some time yet.</p>
+<p>In the meantime the current instance of CDS API will be decommissioned on 26 September 2024 and will no longer be accessible from this date onwards so for part 2 of this blog I’ll be updating that part and actually showing you some interesting things that you can do with the data!</p>
 
 
 </section>
@@ -798,6 +873,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 });
 </script>
 </div> <!-- /content -->
+<div class="page-columns page-rows-contents page-layout-article"><div class="social-share"><a href="https://twitter.com/share?url=https://markocherrie.github.io/Blog_MC/posts/era5tour/&amp;text=The ERA5 tour (part 1)" target="_blank" class="twitter"><i class="fab fa-twitter fa-fw fa-lg"></i></a><a href="https://www.linkedin.com/shareArticle?url=https://markocherrie.github.io/Blog_MC/posts/era5tour/&amp;title=The ERA5 tour (part 1)" target="_blank" class="linkedin"><i class="fa-brands fa-linkedin-in fa-fw fa-lg"></i></a>  <a href="mailto:?subject=The ERA5 tour (part 1)&amp;body=Check out this link:https://markocherrie.github.io/Blog_MC/posts/era5tour/" target="_blank" class="email"><i class="fa-solid fa-envelope fa-fw fa-lg"></i></a><a href="https://www.facebook.com/sharer.php?u=https://markocherrie.github.io/Blog_MC/posts/era5tour/" target="_blank" class="facebook"><i class="fab fa-facebook-f fa-fw fa-lg"></i></a><a href="https://reddit.com/submit?url=https://markocherrie.github.io/Blog_MC/posts/era5tour/&amp;title=The ERA5 tour (part 1)" target="_blank" class="reddit">   <i class="fa-brands fa-reddit-alien fa-fw fa-lg"></i></a><a href="javascript:void(0);" onclick="var mastodon_instance=prompt('Mastodon Instance / Server Name?'); if(typeof mastodon_instance==='string' &amp;&amp; mastodon_instance.length){this.href='https://'+mastodon_instance+'/share?text=The ERA5 tour (part 1) https://markocherrie.github.io/Blog_MC/posts/era5tour/'}else{return false;}" target="_blank" class="mastodon"><i class="fa-brands fa-mastodon fa-fw fa-lg"></i></a></div></div>
 <script>videojs(video_shortcode_videojs_video1);</script>
 
 

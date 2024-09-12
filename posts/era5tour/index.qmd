@@ -1,18 +1,33 @@
 ---
 title: "The ERA5 tour (part 1)"
 author: "Mark Cherrie"
-date: "2024-09-10"
+filters:
+  - social-share
+date: "2024-09-12"
 categories: [data]
 jupyter: python3
+share:
+  permalink: "https://markocherrie.github.io/Blog_MC/posts/era5tour/"
+  description: "The ERA5 tour (part 1)"
+  twitter: true
+  facebook: true
+  reddit: true
+  linkedin: true
+  email: true
+  mastodon: true
+format:
+  html:
+    code-fold: true
+    code-summary: "Show the code"
 ---
  
-![marko swift](era5tour.jpeg)
+![](era5tour.jpeg)
 
-ERA5 deserves the same recognition as Miss Swift IMO. 
+{{< fa fire >}} ERA5 deserves the same recognition as Miss Swift IMO 
 
-## So what is ERA5? 
+## What is ERA5? 
 
-ERA5 is short for ECMWF Reanalysis v5 and is a climate data product from the Copernicus Climate Change Service (C3S) at the European Centre for Medium-Range Weather Forecasts (ECMWF). It's a picture of past weather using a wide range of data sources via numerical weather prediction (NWP) models. OK, enough acronyms for now.
+ERA5 is short for ECMWF Reanalysis v5 and is a climate data product from the Copernicus Climate Change Service (C3S) at the European Centre for Medium-Range Weather Forecasts (ECMWF). It's the best picture of past weather that we have, created using a wide range of data sources via numerical weather prediction (NWP) models. OK, enough acronyms for now.
 
 The main **WOW** factor that ERA5 has over other datasets is it's incredible spatial and temporal resolution. The data begins 4 months into World War 2 (January 1940) and goes to present day, for every **hour**, for every 31km section of land and sea across the **globe**. 
 
@@ -27,36 +42,38 @@ In terms of the climate data there is a wide selection at a single atmospheric l
 
 ## What can you do with this data? 
 
-There are so many potential applications of this data from weather impacts on renewable energy project development (link) and [public health](https://rmets.onlinelibrary.wiley.com/doi/pdf/10.1002/met.2122), alongside the more standard meterological questions of 
-assessing flood risk, climate change etc.  
+There are so many potential applications of this data from [wind power simulation](https://www.sciencedirect.com/science/article/pii/S0360544221017680) and [public health](https://rmets.onlinelibrary.wiley.com/doi/pdf/10.1002/met.2122), alongside the more standard meterological questions of assessing flood risk, climate change etc.  
 
 ## How do you access this data?
 
-There are three main ways to access the data that I know about:
+There are four main ways to access the data that I know about:
 
 * Climate Data Store - Copernicus API   (CDS API)
-* S3 storage (GCP/AWS)
+* Analysis-Ready, Cloud Optimized ERA5 (hosted on GCP)
+* ERA5 forcing data for the Weather Research and Forecasting (WRF) model (hosted on AWS)
 * Google Earth Engine (GEE) 
 
-![Figure 1: Sources of ERA5 data](sources.png)
+![Figure 1: Sources of ERA5 data](sources2.png)
 
-Deciding on which source you use depends on how much data you need and what variables you need. If you need less than a year of any variable go for CDS API; if you need more than a year and any variable email for a bulk download; if you need over a year for a selection of variables then you might be able to use data on AWS/GCP. The Google Earth Engine option can do both, but comes at a high cost for commercial applications; if you are working in a university and already familiar with GEE then agood python-based tutorial is available [here](https://github.com/jwagemann/era5_in_gee).  
+Deciding on which source you use depends on how much data you need and what variables you need. If you need less than a year of any variable go for CDS API; if you need more than a year and any variable email for a bulk download; if you need over a year for a selection of variables then you might be able to use data on AWS/GCP. The Google Earth Engine option can do both, but comes at a high cost for commercial applications; if you are working in a university and already familiar with GEE then a good python-based tutorial is available [here](https://github.com/jwagemann/era5_in_gee).  
 
-In the next couple sections I will explain how to obtain credentials, make a request for a portion of ERA5 data and then process in python. 
+In the next couple sections I will explain how to setup your working environment, make a request for a portion of ERA5 data and then process in python. 
 
 ### CDS API
 
-The standard way to interact with ERA5 data and one that does a great job for smaller datasets (most likely less than a year).
+The CDS API is the standard way to interact with ERA5 data and one that does a great job for smaller datasets (most likely less than a year).
 
 
-#### Credentials
+#### Setup
 
-Create an account on cds - go to this [page](https://cds.climate.copernicus.eu/api-how-to) - follow the instructions and create the $HOME/.cdsapirc file.
+Create an account on CDS by going to this [page](https://cds.climate.copernicus.eu/api-how-to) - follow the instructions and create the $HOME/.cdsapirc file. Pip install cdsapi.
+
+To work with the outputs you might need to download HDF5 libraries (for me on mac it was 'brew install hdf5'). Once that's set up pip install the netCDF4 package.
 
 
 #### Data Request
 
-From here you want to generate the API request, the website will build this for you if use the select boxes :
+From here you want to generate the API request, the website will build this for you if use the select boxes, see below for my wonderful clicking and scrolling skills :
 
 {{< video cdsapi.mp4 >}}
 
@@ -103,7 +120,9 @@ c.retrieve(
 
 #### Processing
 
-Download HDF5 libraries for your Linux distribution, then pip install the netCDF4 package. 
+The data is netcdf - a common file type for multidimensional array data. When I say multidimensional, what I'm generally thinking of is 4 dimensions - latitude, longitude, time and **some interesting data**. A key feature of netcdf is that metadata is embedded within the file. When you print the dataset in python you will get to see all this useful information. 
+
+Here is an example of working with the netcdf file:
 
 ```{python}
 #| eval: false
@@ -131,20 +150,35 @@ dataset.close()
 
 ### Analysis-Ready, Cloud Optimized ERA5 (hosted on GCP)
 
-////////// insert some details /////////
+ARCO for short, this has been created by Google to feed into a weather forecasting model. There are five datasets:
 
-#### Credentials
+* 'gcp-public-data-arco-era5/co/model-level-moisture.zarr',
+* 'gcp-public-data-arco-era5/co/model-level-wind.zarr',
+* 'gcp-public-data-arco-era5/co/single-level-forecast.zarr',
+* 'gcp-public-data-arco-era5/co/single-level-reanalysis.zarr',
+* 'gcp-public-data-arco-era5/co/single-level-surface.zarr'
+
+The reanalysis is the one we are interested in. 
+
+#### Setup
+
 The data is public so no need for credentials. 
+
+Pip install the xarray, zarr, fsspec and gcsfs packages. 
 
 #### Data Request
 
-Pip install the xarray, zarr, fsspe and gcsfs packages. 
+Follow this [tutorial](https://github.com/google-research/arco-era5/blob/main/docs/0-Surface-Reanalysis-Walkthrough.ipynb). 
 
-Follow the [tutorial](https://github.com/google-research/arco-era5/blob/main/docs/0-Surface-Reanalysis-Walkthrough.ipynb). 
+One of the challenging aspects of accessing via this route is that the spatial dimention corresponds to a Gaussian Grid - in particular the reduced Gaussian Grid N320 (which means there are 320 latitude points from the equator to each pole). If you want to subset to a particular lat and long within the Gaussian Grid then you need to use the "GRIB_paramId" attribute, this will related to the values [here](https://confluence.ecmwf.int/display/FCST/Gaussian+grid+with+320+latitude+lines+between+pole+and+equator).
+
+Otherwise the recommended way is to subset the data using the latitude and longitude attributes. **Note** that the coordinate system for ERA5 is 0 to 360 not -180 to 180. 
 
 #### Processing
 
-The data is in Zarr format.... advantages etc.
+Zarr is a powerful way to store chunked, compressed, N-dimensional arrays based on an open-source specification. The key part is that it is optimised for cloud-native storage and for parallel input/output.  
+
+There's a bit of a learning curve to working with xarray (and dask) in python.   
 
 
 ### ERA5 forcing data for the Weather Research and Forecasting (WRF) model (hosted on AWS)
@@ -156,7 +190,10 @@ This source is focused on the wind industry. It's a subset of ERA5 timeseries da
 * 2-m temperature
 * surface pressure
 
-#### Credentials
+#### Setup
+
+Pip install boto3 and pandas.
+
 It's a public bucket again, so no credentials needed, however you need to either add configuration details to ~/.aws/credentials **or** add config as the following way when creating the S3 client:
 
 ```{python}
@@ -167,10 +204,9 @@ import boto3
 s3_client = boto3.client('s3', config=Config(signature_version=UNSIGNED))
 ```
 
-
 #### Data request
 
-Follow this [tutorial](https://github.com/moptis/era5-for-wrf/blob/main/tutorials/era5_global_timeseries.ipynb). In summary you want to find the gid (1 to 1038240) that matches with the latitude/longitude pair that you are interested in and then use this code:
+Follow this [tutorial](https://github.com/moptis/era5-for-wrf/blob/main/tutorials/era5_global_timeseries.ipynb). In summary you want to find the gid (1 to 1038240) that matches with the latitude/longitude pair that you are interested in and then do something similar to below:
 
 ```{python}
 import pandas as pd
@@ -201,20 +237,31 @@ era5_df = pd.read_csv(csv_string_io, index_col = 0, skiprows = 1, parse_dates = 
 
 The data per point is a CSV with datetime as the index and then the four variables above - simple to work with in pandas or whatever data package you want to use. 
 
+## Summary
+
+Here is the following spiciness (read difficulty) for accessing each of the data sources:
+
+| Source | Setup | Data Request | Processing
+|------|------|------|------|
+| CDS API   |  {{< fa pepper-hot >}}{{< fa pepper-hot >}}   |  {{< fa pepper-hot >}}    |  {{< fa pepper-hot >}}   |
+| Analysis-Ready, Cloud Optimized ERA5 (hosted on GCP)    |  {{< fa pepper-hot >}}    |   {{< fa pepper-hot >}}{{< fa pepper-hot >}}  |  {{< fa pepper-hot >}}{{< fa pepper-hot >}}{{< fa pepper-hot >}}   |
+| ERA5 forcing data for the Weather Research and Forecasting (WRF) model (hosted on AWS)    |  {{< fa pepper-hot >}}    |   {{< fa pepper-hot >}}   |   {{< fa pepper-hot >}}   |
+
+: Data Access Spiciness {#tbl-letters}
 
 ##  What next?
 
-Having spent the blog post raving about ERA5 you'll be surprised to hear that their sibling has been planed and will have some major improvements:
+Having spent the blog post raving about ERA5 you'll be surprised to hear that their sibling has been planned and will have some major improvements:
 
 * resolution of at least 18 km,
 * model bias,
 * realism of near-surface quantities,
 * ocean wave physics
 
-... but it's not due until 2027. So there's still life in ERA5 for some time yet, however there are a few changes for one of the sources.
+... so why the fuck have I been reading about accessing an inferior data product I hear you say
 
-The current instance of CDS API will be decommissioned on 26 September 2024 and will no longer be accessible from this date onwards. 
+Well, ERA6 is not due until 2027, so there's still plenty of life in ERA5 for some time yet.
 
-Part 2 of this blog will summarise how to get access via the new CDS route. 
+In the meantime the current instance of CDS API will be decommissioned on 26 September 2024 and will no longer be accessible from this date onwards so for part 2 of this blog I'll be updating that part and actually showing you some interesting things that you can do with the data!
 
 
