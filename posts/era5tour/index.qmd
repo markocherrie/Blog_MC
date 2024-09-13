@@ -14,14 +14,13 @@ share:
   reddit: true
   linkedin: true
   email: true
-  mastodon: true
 format:
   html:
     code-fold: true
     code-summary: "Show the code"
 ---
  
-![](era5tour.jpeg)
+![](era5tour.png)
 
 {{< fa fire >}} ERA5 deserves the same recognition as Miss Swift IMO 
 
@@ -31,7 +30,7 @@ ERA5 is short for ECMWF Reanalysis v5 and is a climate data product from the Cop
 
 The main **WOW** factor that ERA5 has over other datasets is it's incredible spatial and temporal resolution. The data begins 4 months into World War 2 (January 1940) and goes to present day, for every **hour**, for every 31km section of land and sea across the **globe**. 
 
-In terms of the climate data there is a wide selection at a single atmospheric level and a few at multi-level (e.g. pressure, temperature). Popular single level data includes:
+In terms of the climate data there is a wide selection at a single atmospheric level (i.e. at a specific atmospheric level, e.g. 10 meteres) and a few at multi-level (e.g. pressure, temperature). Popular single level data include:
 
 * 10m u-component of wind (velocity in the East direction)
 * 10m v-component of wind (velocity in the North direction)
@@ -42,7 +41,7 @@ In terms of the climate data there is a wide selection at a single atmospheric l
 
 ## What can you do with this data? 
 
-There are so many potential applications of this data from [wind power simulation](https://www.sciencedirect.com/science/article/pii/S0360544221017680) and [public health](https://rmets.onlinelibrary.wiley.com/doi/pdf/10.1002/met.2122), alongside the more standard meterological questions of assessing flood risk, climate change etc.  
+There are so many potential applications of this data from [wind power simulation](https://www.sciencedirect.com/science/article/pii/S0360544221017680) and [public health](https://rmets.onlinelibrary.wiley.com/doi/pdf/10.1002/met.2122), alongside the more standard meterological applications of assessing flood risk, climate change etc.  
 
 ## How do you access this data?
 
@@ -55,9 +54,9 @@ There are four main ways to access the data that I know about:
 
 ![Figure 1: Sources of ERA5 data](sources2.png)
 
-Deciding on which source you use depends on how much data you need and what variables you need. If you need less than a year of any variable go for CDS API; if you need more than a year and any variable email for a bulk download; if you need over a year for a selection of variables then you might be able to use data on AWS/GCP. The Google Earth Engine option can do both, but comes at a high cost for commercial applications; if you are working in a university and already familiar with GEE then a good python-based tutorial is available [here](https://github.com/jwagemann/era5_in_gee).  
+Deciding on which source you use depends on how much data you need and what variables you need. If you need less than a year of any variable go for CDS API; if you need more than a year and any variable then you could try to arrange a bulk download with CDS; if you need over a year for a selection of variables then you might be able to use data on AWS/GCP. The Google Earth Engine option can do both, but comes at a high cost for commercial applications; if you are working in a university and already familiar with GEE then a good python-based tutorial is available [here](https://github.com/jwagemann/era5_in_gee).  
 
-In the next couple sections I will explain how to setup your working environment, make a request for a portion of ERA5 data and then process in python. 
+In the next couple sections I will summarise and signpost to resources on setting up your working environment, making a request for a portion of ERA5 data and then processing in python. 
 
 ### CDS API
 
@@ -120,7 +119,7 @@ c.retrieve(
 
 #### Processing
 
-The data is netcdf - a common file type for multidimensional array data. When I say multidimensional, what I'm generally thinking of is 4 dimensions - latitude, longitude, time and **some interesting data**. A key feature of netcdf is that metadata is embedded within the file. When you print the dataset in python you will get to see all this useful information. 
+The data is netcdf - a common file type for multidimensional array data. When I say multidimensional, what I'm generally thinking of is 4 dimensions - latitude, longitude, time and **some interesting data**. A key feature of netcdf is that metadata is embedded within the file. When you print the dataset in python you will get to see all this useful information like the projection. 
 
 Here is an example of working with the netcdf file:
 
@@ -137,11 +136,11 @@ dataset = nc.Dataset(file_path, 'r')
 # Print the dataset information
 print(dataset)
 
-# Extract a variable (e.g., temperature)
-temperature = dataset.variables['temperature'][:]
+# Extract a variable (e.g., uwind_100)
+uwind_100 = dataset.variables['10m_u_component_of_wind'][:]
 
 # Print the variable information
-print(temperature)
+print(uwind_100)
 
 # Close the dataset
 dataset.close()
@@ -150,7 +149,7 @@ dataset.close()
 
 ### Analysis-Ready, Cloud Optimized ERA5 (hosted on GCP)
 
-ARCO for short, this has been created by Google to feed into a weather forecasting model. There are five datasets:
+ARCO for short, this has been created by Google to feed into a weather forecasting model. There are five cloud optimised datasets:
 
 * 'gcp-public-data-arco-era5/co/model-level-moisture.zarr',
 * 'gcp-public-data-arco-era5/co/model-level-wind.zarr',
@@ -172,13 +171,16 @@ Follow this [tutorial](https://github.com/google-research/arco-era5/blob/main/do
 
 One of the challenging aspects of accessing via this route is that the spatial dimention corresponds to a Gaussian Grid - in particular the reduced Gaussian Grid N320 (which means there are 320 latitude points from the equator to each pole). If you want to subset to a particular lat and long within the Gaussian Grid then you need to use the "GRIB_paramId" attribute, this will related to the values [here](https://confluence.ecmwf.int/display/FCST/Gaussian+grid+with+320+latitude+lines+between+pole+and+equator).
 
-Otherwise the recommended way is to subset the data using the latitude and longitude attributes. **Note** that the coordinate system for ERA5 is 0 to 360 not -180 to 180. 
+Otherwise the recommended way is to subset the data using the latitude and longitude attributes. **Note** that the coordinate system for ERA5 longitudes is 0 to 360 not -180 to 180. 
 
 #### Processing
 
-Zarr is a powerful way to store chunked, compressed, N-dimensional arrays based on an open-source specification. The key part is that it is optimised for cloud-native storage and for parallel input/output.  
+Zarr is a powerful way to store N-dimensional arrays. The key part is that it is optimised for cloud storage and for parallelised input/output. 
 
-There's a bit of a learning curve to working with xarray (and dask) in python.   
+There's a bit of a learning curve to working with xarray (and dask) in python but IMO the key concepts are chunks (working on smaller more manageable pieces of data) and tasks (computations to be performed on the chunks). Both chunks and tasks are perfomed lazily so you have to be explicit when you want something to happen (e.g. .compute()) otherwise it will just add to your task graph). By using xarrary and dask you can work with terrabytes of data on your own computer, which is different to the other methods here, which are still constrained by how much you can fit into local memory. 
+
+![Figure 2: Zarr format](zarr.png)
+
 
 
 ### ERA5 forcing data for the Weather Research and Forecasting (WRF) model (hosted on AWS)
@@ -235,7 +237,7 @@ era5_df = pd.read_csv(csv_string_io, index_col = 0, skiprows = 1, parse_dates = 
 
 #### Processing
 
-The data per point is a CSV with datetime as the index and then the four variables above - simple to work with in pandas or whatever data package you want to use. 
+The data per point is a CSV with datetime as the index and then the four variables above - simple to work with in pandas or whatever data library you want to use. 
 
 ## Summary
 
@@ -251,14 +253,14 @@ Here is the following spiciness (read difficulty) for accessing each of the data
 
 ##  What next?
 
-Having spent the blog post raving about ERA5 you'll be surprised to hear that their sibling has been planned and will have some major improvements:
+Having spent the blog post raving about ERA5 you'll be surprised to hear that their sibling has been planned and will have some major improvements on:
 
-* resolution of at least 18 km,
+* resolution (to at least 18 km),
 * model bias,
 * realism of near-surface quantities,
 * ocean wave physics
 
-... so why the fuck have I been reading about accessing an inferior data product I hear you say
+... so why have I been reading about accessing an inferior data product I hear you say ...
 
 Well, ERA6 is not due until 2027, so there's still plenty of life in ERA5 for some time yet.
 
