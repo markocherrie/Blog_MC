@@ -241,7 +241,7 @@ The data per point is a CSV with datetime as the index and then the four variabl
 
 ## Summary
 
-Here is the following spiciness (read difficulty) for accessing each of the data sources:
+Here is the following spiciness (read difficulty) for using data from the three sources:
 
 | Source | Setup | Data Request | Processing
 |------|------|------|------|

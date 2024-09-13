@@ -81,6 +81,6 @@
     "href": "posts/era5tour/index.html#summary",
     "title": "The ERA5 tour (part 1)",
     "section": "Summary",
-    "text": "Summary\nHere is the following spiciness (read difficulty) for accessing each of the data sources:\n\n\n\nTable 1: Data Access Spiciness\n\n\n\n\n\n\n\n\n\n\n\nSource\nSetup\nData Request\nProcessing\n\n\n\n\nCDS API\n\n\n\n\n\nAnalysis-Ready, Cloud Optimized ERA5 (hosted on GCP)\n\n\n\n\n\nERA5 forcing data for the Weather Research and Forecasting (WRF) model (hosted on AWS)"
+    "text": "Summary\nHere is the following spiciness (read difficulty) for using data from the three sources:\n\n\n\nTable 1: Data Access Spiciness\n\n\n\n\n\n\n\n\n\n\n\nSource\nSetup\nData Request\nProcessing\n\n\n\n\nCDS API\n\n\n\n\n\nAnalysis-Ready, Cloud Optimized ERA5 (hosted on GCP)\n\n\n\n\n\nERA5 forcing data for the Weather Research and Forecasting (WRF) model (hosted on AWS)"
   }
 ]

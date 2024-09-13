@@ -244,7 +244,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>From here you want to generate the API request, the website will build this for you if use the select boxes, see below for my wonderful clicking and scrolling skills :</p>
 <div class="quarto-video"><video id="video_shortcode_videojs_video1" class="video-js vjs-default-skin vjs-fluid" controls="" preload="auto" data-setup="{}" title=""><source src="cdsapi.mp4"></video></div>
 <p>Now copy and paste that into a python script - this will download the data into a netcdf called “download.nc”:</p>
-<div id="3de4f624" class="cell" data-execution_count="1">
+<div id="7d86b105" class="cell" data-execution_count="1">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> cdsapi</span>
@@ -285,7 +285,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h4 class="anchored" data-anchor-id="processing">Processing</h4>
 <p>The data is netcdf - a common file type for multidimensional array data. When I say multidimensional, what I’m generally thinking of is 4 dimensions - latitude, longitude, time and <strong>some interesting data</strong>. A key feature of netcdf is that metadata is embedded within the file. When you print the dataset in python you will get to see all this useful information like the projection.</p>
 <p>Here is an example of working with the netcdf file:</p>
-<div id="454ca309" class="cell" data-execution_count="2">
+<div id="48bf71dc" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> netCDF4 <span class="im">as</span> nc</span>
@@ -356,7 +356,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h4 class="anchored" data-anchor-id="setup-2">Setup</h4>
 <p>Pip install boto3 and pandas.</p>
 <p>It’s a public bucket again, so no credentials needed, however you need to either add configuration details to ~/.aws/credentials <strong>or</strong> add config as the following way when creating the S3 client:</p>
-<div id="73814048" class="cell" data-execution_count="3">
+<div id="f80a69e6" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> botocore <span class="im">import</span> UNSIGNED</span>
@@ -370,7 +370,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="data-request-2" class="level4">
 <h4 class="anchored" data-anchor-id="data-request-2">Data request</h4>
 <p>Follow this <a href="https://github.com/moptis/era5-for-wrf/blob/main/tutorials/era5_global_timeseries.ipynb">tutorial</a>. In summary you want to find the gid (1 to 1038240) that matches with the latitude/longitude pair that you are interested in and then do something similar to below:</p>
-<div id="47306098" class="cell" data-execution_count="4">
+<div id="ea2a8b70" class="cell" data-execution_count="4">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
@@ -405,7 +405,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="summary" class="level2">
 <h2 class="anchored" data-anchor-id="summary">Summary</h2>
-<p>Here is the following spiciness (read difficulty) for accessing each of the data sources:</p>
+<p>Here is the following spiciness (read difficulty) for using data from the three sources:</p>
 <div id="tbl-letters" class="quarto-float anchored">
 <figure class="quarto-float quarto-float-tbl figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-letters-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
