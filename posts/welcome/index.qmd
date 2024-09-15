@@ -14,7 +14,6 @@ Mainly what you'll get here is:
 * Insights from data
 * Building software in public
 * Experiences with tools and workflows 
-* Escapades in husbandary (being a husband not cultivating plants/animals), fatherhood, sport/fitness and food. 
 
 I've always been fond of authors that try to make their work reproducible and I will attempt that too for the data/software stuff, time permitting. 
 
