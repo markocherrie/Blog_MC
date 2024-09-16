@@ -10,7 +10,7 @@ I used to blog for years but it slowly tailed off.
 I miss having a place on the internet where I can put down ideas, progress on side projects and general life stuff. So here it is - blog 2.0.
 
 Mainly what you'll get here is:  
-
+ 
 * Insights from data
 * Building software in public
 * Experiences with tools and workflows 
