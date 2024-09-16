@@ -19,6 +19,6 @@ I've always been fond of authors that try to make their work reproducible and I 
 
 That's enough of a welcome, now onto the first post. 
 
-
+ 
 
 ![by Shubham Dhage](thumbnail.jpg)
