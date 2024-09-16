@@ -15,7 +15,7 @@ Mainly what you'll get here is:
 * Building software in public
 * Experiences with tools and workflows 
 
-I've always been fond of authors that try to make their work reproducible and I will attempt that too for the data/software stuff, time permitting. 
+I've always been fond of authors that try to make their work reproducible and I will attempt that too for the data/software stuff, time permitting.  
 
 That's enough of a welcome, now onto the first post. 
 
